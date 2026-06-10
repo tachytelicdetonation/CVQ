@@ -1,5 +1,9 @@
 # CVQ — Channel-wise Vector Quantization (unofficial)
 
+[![CI](https://github.com/tachytelicdetonation/CVQ/actions/workflows/ci.yml/badge.svg)](https://github.com/tachytelicdetonation/CVQ/actions/workflows/ci.yml)
+[![arXiv](https://img.shields.io/badge/arXiv-2605.26089-b31b1b.svg)](https://arxiv.org/abs/2605.26089)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+
 Unofficial PyTorch implementation of **"Channel-wise Vector Quantization"**
 ([arXiv:2605.26089](https://arxiv.org/abs/2605.26089)) — Song et al., 2026 —
 covering both:
@@ -22,6 +26,25 @@ The MNIST tier is a 1/4-scale homothety of the paper's setup, preserving the
 dimensionality-parity property `c = h·w` (Sec. 4): 32×32 images, `f=4` →
 8×8 latent, **64 channel tokens** of dim 64, codebook 1,024 — vs. the paper's
 256×256, `f=16` → 16×16, **256 channel tokens** of dim 256, codebook 16,384.
+
+## Results (MNIST tier, trained in ~8 minutes on an M-series MacBook)
+
+Text-conditioned samples from CAR ("a handwritten digit 0 / 3 / 7", six each)
+and the paper's Fig. 5 coarse-to-fine sweep — one sample decoded from its
+first 1, 2, 4, 8, 16, 32, 64 channels:
+
+<p align="center">
+  <img src="assets/mnist_samples.png" alt="Prompt-conditioned CAR samples" width="320">
+  <br>
+  <img src="assets/mnist_progressive.png" alt="Progressive next-channel decoding" width="480">
+</p>
+
+CVQ tokenizer reconstructions after 700 training steps (top: original,
+bottom: reconstruction):
+
+<p align="center">
+  <img src="assets/mnist_reconstruction.png" alt="CVQ reconstructions" width="320">
+</p>
 
 ## Install
 
@@ -113,6 +136,31 @@ paper's global batch sizes.
   attention placement) follow taming-transformers conventions.
 - Distributed training, EMA, and lr schedules are left to the user; the paper
   does not describe them.
+
+## Citation
+
+This is an independent, unofficial implementation; all credit for the method
+goes to the authors. If you use this code, please cite the paper:
+
+```bibtex
+@article{song2026cvq,
+  title   = {Channel-wise Vector Quantization},
+  author  = {Song, Wei and Wang, Tianhang and Chen, Yitong and Zhang, Tong
+             and Wu, Zuxuan and Li, Min and Wang, Jiaqi and Yu, Kaicheng},
+  journal = {arXiv preprint arXiv:2605.26089},
+  year    = {2026}
+}
+```
+
+Repository metadata for citing this implementation is in
+[`CITATION.cff`](CITATION.cff). Licensed under [MIT](LICENSE).
+
+## Acknowledgments
+
+- Architecture conventions for the encoder/decoder and the VQGAN training
+  recipe follow [taming-transformers](https://github.com/CompVis/taming-transformers)
+  (Esser et al., 2021).
+- Nested dropout follows Rippel et al., 2014.
 
 ## Repo layout
 

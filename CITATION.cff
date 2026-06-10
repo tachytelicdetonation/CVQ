@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+message: >-
+  If you use this code, please cite the original paper below and
+  optionally reference this repository as the (unofficial) implementation.
+title: "CVQ: unofficial implementation of Channel-wise Vector Quantization"
+type: software
+authors:
+  - family-names: Deshmukh
+    given-names: Tanmay
+repository-code: "https://github.com/tachytelicdetonation/CVQ"
+license: MIT
+preferred-citation:
+  type: article
+  title: "Channel-wise Vector Quantization"
+  authors:
+    - family-names: Song
+      given-names: Wei
+    - family-names: Wang
+      given-names: Tianhang
+    - family-names: Chen
+      given-names: Yitong
+    - family-names: Zhang
+      given-names: Tong
+    - family-names: Wu
+      given-names: Zuxuan
+    - family-names: Li
+      given-names: Min
+    - family-names: Wang
+      given-names: Jiaqi
+    - family-names: Yu
+      given-names: Kaicheng
+  year: 2026
+  journal: "arXiv preprint arXiv:2605.26089"
+  url: "https://arxiv.org/abs/2605.26089"
