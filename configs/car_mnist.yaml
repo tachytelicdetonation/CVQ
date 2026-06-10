@@ -1,0 +1,37 @@
+# CAR — MNIST tier. Same next-channel-prediction pipeline as the paper,
+# but with a tiny from-scratch GPT instead of Qwen3-4B so it trains on a
+# laptop. Prompts are "a handwritten digit N" through the identical
+# text->prefix code path used by the paper-scale config.
+
+seed: 0
+device: auto
+out_dir: runs/car_mnist
+tokenizer_ckpt: runs/tokenizer_mnist/tokenizer.pt
+max_text_len: 8
+cond_drop_prob: 0.1     # classifier-free guidance dropout
+
+data:
+  kind: mnist
+  root: data
+  resolution: 32
+  in_channels: 1
+  num_workers: 2
+
+text_tokenizer:
+  kind: word            # tiny word-level vocab over the digit prompts
+
+backbone:
+  kind: tiny
+  dim: 384
+  depth: 6
+  heads: 6
+  max_seq_len: 128      # 8 text + 1 BOI + 64 channels
+
+train:
+  stage: 0              # 0 = single-stage end-to-end (no pretrained LLM to protect)
+  batch_size: 128
+  lr: 3.0e-4            # from-scratch transformer wants a higher lr than fine-tuning
+  weight_decay: 1.0e-3
+  epochs: 10
+  log_every: 50
+  ckpt_every: 1000

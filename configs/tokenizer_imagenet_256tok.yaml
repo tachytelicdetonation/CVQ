@@ -1,0 +1,39 @@
+# CVQ tokenizer — paper configuration, 256-token model (Table 1, top).
+# ImageNet-1K @ 256x256, f=16 -> 16x16 latent, c=256 channels,
+# codebook 16,384, 100 epochs, Adam(0.5, 0.9), lr 1e-4, global batch 256.
+# Requires: pip install -e ".[perceptual]"  (LPIPS)
+
+seed: 0
+device: auto
+out_dir: runs/tokenizer_imagenet_256tok
+
+data:
+  kind: imagefolder
+  train_root: /path/to/imagenet/train   # <-- point at ImageNet-1K
+  val_root: /path/to/imagenet/val
+  resolution: 256
+  in_channels: 3
+  num_workers: 8
+
+model:
+  ch: 128
+  ch_mult: [1, 1, 2, 2, 4]   # 4 downsamples -> f=16
+  num_res_blocks: 2
+  z_channels: 256            # 256 channel tokens
+  num_codes: 16384
+  beta: 0.25
+  use_mid_attn: true
+  nested_dropout_ratio: 0.25
+  gan_eta: 0.05
+
+train:
+  batch_size: 256            # paper: global batch 256 (use DDP/grad-accum to reach it)
+  lr: 1.0e-4
+  weight_decay: 1.0e-4
+  epochs: 100
+  perceptual_weight: 1.0
+  gan_weight: 1.0
+  disc_start: 50000
+  log_every: 100
+  eval_every: 5000
+  ckpt_every: 10000

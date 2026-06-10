@@ -1,0 +1,37 @@
+# CVQ tokenizer — paper configuration, 1024-token model (Table 1, bottom).
+# f=8 -> 32x32 latent, c=1024 channels, code_dim=1024, codebook 16,384.
+
+seed: 0
+device: auto
+out_dir: runs/tokenizer_imagenet_1024tok
+
+data:
+  kind: imagefolder
+  train_root: /path/to/imagenet/train
+  val_root: /path/to/imagenet/val
+  resolution: 256
+  in_channels: 3
+  num_workers: 8
+
+model:
+  ch: 128
+  ch_mult: [1, 1, 2, 2]      # 3 downsamples -> f=8
+  num_res_blocks: 2
+  z_channels: 1024           # 1024 channel tokens
+  num_codes: 16384
+  beta: 0.25
+  use_mid_attn: true
+  nested_dropout_ratio: 0.25
+  gan_eta: 0.05
+
+train:
+  batch_size: 256
+  lr: 1.0e-4
+  weight_decay: 1.0e-4
+  epochs: 100
+  perceptual_weight: 1.0
+  gan_weight: 1.0
+  disc_start: 50000
+  log_every: 100
+  eval_every: 5000
+  ckpt_every: 10000

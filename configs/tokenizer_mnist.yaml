@@ -1,0 +1,39 @@
+# CVQ tokenizer — MNIST tier (runs on a laptop: MPS/CPU, ~minutes-hours).
+# Mirrors the paper's setup at 1/4 scale in every dimension:
+#   paper: 256x256 img, f=16 -> 16x16 latent, c=256 channels, code_dim=256, N=16,384
+#   here:   32x32 img, f=4  ->  8x8  latent, c=64  channels, code_dim=64,  N=1,024
+# Dimensionality parity (c = h*w) is preserved, as in Sec. 4.
+
+seed: 0
+device: auto            # auto -> cuda > mps > cpu
+out_dir: runs/tokenizer_mnist
+
+data:
+  kind: mnist
+  root: data
+  resolution: 32
+  in_channels: 1
+  num_workers: 2
+
+model:
+  ch: 64
+  ch_mult: [1, 2, 2]    # 2 downsamples -> f=4
+  num_res_blocks: 2
+  z_channels: 64        # = number of channel tokens per image
+  num_codes: 1024
+  beta: 0.25
+  use_mid_attn: true
+  nested_dropout_ratio: 0.25   # alpha, Table 7
+  gan_eta: 0.05                # Eq. 8
+
+train:
+  batch_size: 128
+  lr: 1.0e-4
+  weight_decay: 1.0e-4
+  epochs: 8
+  perceptual_weight: 0.0  # set >0 after `pip install lpips` for the full recipe
+  gan_weight: 0.5
+  disc_start: 2000        # let recon stabilize before adversarial pressure
+  log_every: 50
+  eval_every: 1000
+  ckpt_every: 1000

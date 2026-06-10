@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cvq"
+version = "0.1.0"
+description = "Channel-wise Vector Quantization (CVQ) and Channel-wise AutoRegressive (CAR) generation — unofficial implementation of arXiv:2605.26089"
+requires-python = ">=3.10"
+dependencies = [
+    "torch>=2.3",
+    "torchvision>=0.18",
+    "numpy",
+    "pyyaml",
+    "tqdm",
+    "einops",
+]
+
+[project.optional-dependencies]
+# Perceptual loss for the full VQGAN recipe (used by paper-scale configs;
+# MNIST config works without it).
+perceptual = ["lpips"]
+# Paper-scale CAR with a Qwen3 backbone.
+llm = ["transformers>=4.51", "accelerate"]
+# rFID evaluation.
+eval = ["torchmetrics", "torch-fidelity"]
+
+[tool.setuptools.packages.find]
+include = ["cvq*"]
+
+[tool.pytest.ini_options]
+markers = ["slow: trains small models; run explicitly with -m slow"]
+addopts = "-m 'not slow'"

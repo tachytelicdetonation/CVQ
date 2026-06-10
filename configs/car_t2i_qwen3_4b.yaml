@@ -1,0 +1,45 @@
+# CAR — paper configuration (Sec. 4.2 + Appendix E): Qwen3-4B backbone,
+# next-channel prediction over 256 CVQ tokens, text-to-image.
+# Requires: pip install -e ".[llm]"
+#
+# Two-stage recipe — run twice:
+#   Stage I : train.stage: 1, lr 1e-4  (projector + head only, LLM frozen)
+#   Stage II: train.stage: 2, lr 2e-5  (end-to-end), pass --resume runs/car_t2i_4b/car.pt
+#
+# The paper trains on an 80M-pair mixture (ImageNet-21K subset,
+# LAION-Aesthetics-12M, CC12M, Megalith-10M, BLIP-3o, in-house data).
+# Provide your corpus as a jsonl of {"image": path, "text": caption}.
+
+seed: 0
+device: auto
+out_dir: runs/car_t2i_4b
+tokenizer_ckpt: runs/tokenizer_imagenet_256tok/tokenizer.pt
+max_text_len: 128
+cond_drop_prob: 0.1
+
+data:
+  kind: jsonl
+  train_jsonl: /path/to/corpus/train.jsonl   # {"image": ..., "text": ...} per line
+  val_jsonl: /path/to/corpus/val.jsonl
+  resolution: 256
+  in_channels: 3
+  num_workers: 8
+
+text_tokenizer:
+  kind: hf
+  model_name: Qwen/Qwen3-4B
+
+backbone:
+  kind: hf
+  model_name: Qwen/Qwen3-4B
+  dtype: bfloat16
+  gradient_checkpointing: true
+
+train:
+  stage: 1              # then 2 (see header)
+  batch_size: 8         # per device; paper-scale runs need DDP + grad accumulation
+  lr: 1.0e-4            # stage 1; use 2.0e-5 for stage 2 (Appendix E)
+  weight_decay: 1.0e-3
+  epochs: 1
+  log_every: 100
+  ckpt_every: 5000
