@@ -1,5 +1,13 @@
 # CVQ — Channel-wise Vector Quantization (unofficial)
 
+## Validation scope
+
+The demonstrated results below are from the MNIST tier, including sample images,
+reconstructions, and a nested-dropout ablation. The ImageNet and text-to-image
+configurations are starting points for larger experiments; they are not evidence
+that this repository has reproduced the paper's full-scale results. Distributed
+training integration is still required for the paper's global batch sizes.
+
 [![CI](https://github.com/tachytelicdetonation/CVQ/actions/workflows/ci.yml/badge.svg)](https://github.com/tachytelicdetonation/CVQ/actions/workflows/ci.yml)
 [![arXiv](https://img.shields.io/badge/arXiv-2605.26089-b31b1b.svg)](https://arxiv.org/abs/2605.26089)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
